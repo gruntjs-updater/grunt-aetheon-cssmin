@@ -55,11 +55,16 @@ module.exports = function(grunt) {
                       .join(grunt.util.normalizelf(grunt.util.linefeed));
 
           var min = valid.map(function(f) {
-            options.relativeTo = options.relativeTo || path.dirname(f);
+            
+            var cssOptions = {
+              relativeTo: options.relativeTo || path.dirname(f),
+              keepSpecialComments: 0
+            };
 
             var cssContent = grunt.file.read(f);
-            if(options.minimize)
-              minifyCSS(cssContent, options);
+            cssContent = minifyCSS(cssContent, cssOptions);
+
+            return cssContent;
 
           }).join('');
 
