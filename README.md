@@ -1,6 +1,9 @@
-# grunt-contrib-cssmin [![Build Status](https://secure.travis-ci.org/gruntjs/grunt-contrib-cssmin.png?branch=master)](http://travis-ci.org/gruntjs/grunt-contrib-cssmin)
+# grunt-aetheon-cssmin 
+> Fork of grunt-contrib-cssmin meant to:
 
-> Compress CSS files.
+> . Compress CSS files.
+
+> . Combine files via @include
 
 
 
@@ -26,76 +29,37 @@ grunt.loadNpmTasks('grunt-contrib-cssmin');
 ## Cssmin task
 _Run this task with the `grunt cssmin` command._
 
-Task targets, files and options may be specified according to the grunt [Configuring tasks](http://gruntjs.com/configuring-tasks) guide.
-
-Files are compressed with [clean-css](https://github.com/GoalSmashers/clean-css).
-### Options
-
-#### banner
-
-Type: `String`
-Default: `null`
-
-Prefix the compressed source with the given banner, with a linebreak inbetween.
-
-#### keepSpecialComments
-
-Type: `String` `Number`
-Default: `'*'`
-
-To keep or remove special comments, exposing the underlying option from [clean-css](https://github.com/GoalSmashers/clean-css).. `'*'` for keeping all (default), `1` for keeping first one, `0` for removing all.
-
-#### report
-Choices: `false`, `'min'`, `'gzip'`
-Default: `false`
-
-Either do not report anything, report only minification result, or report minification and gzip results.
-This is useful to see exactly how well clean-css is performing but using `'gzip'` will make the task take 5-10x longer to complete.
-
-Example ouput using `'gzip'`:
-
-```
-Original: 198444 bytes.
-Minified: 101615 bytes.
-Gzipped:  20084 bytes.
-```
 ### Usage Examples
 
-#### Combine two files into one output file
-
+#### CSS File with @include instructions
 ```js
 cssmin: {
-  combine: {
-    files: {
-      'path/to/output.css': ['path/to/input_one.css', 'path/to/input_two.css']
-    }
-  }
-}
-```
-
-#### Add a banner
-```js
-cssmin: {
-  add_banner: {
+  includeTask: {
     options: {
-      banner: '/* My minified css file */'
+      // @include instructions will be relative to this path
+      relativeTo: "lib/",
     },
     files: {
-      'path/to/output.css': ['path/to/**/*.css']
+      'path/to/output.css': ['path/to/include.css']
     }
   }
 }
 ```
 
-#### Minify all contents of a release directory and add a `.min.css` extension
-```js
-cssmin: {
-  minify: {
-    expand: true,
-    cwd: 'release/css/',
-    src: ['*.css', '!*.min.css'],
-    dest: 'release/css/',
-    ext: '.min.css'
-  }
-}
+The include file may have the following content:
+
+```css
+
+
+@include("jquery-mobile/jquery-mobile.css");
+@include("bootstrap/bootstrap.css");
+
 ```
+
+After searching on the _relativeTo_ directory for the including files, will be generated a single file with 
+the combined files. Also all the url resources inside the css files will be relative to the value of 
+this variable.
+
+#### Other
+
+Check [grunt-contrib-cssmin](https://github.com/gruntjs/grunt-contrib-cssmin) for more usage examples.
